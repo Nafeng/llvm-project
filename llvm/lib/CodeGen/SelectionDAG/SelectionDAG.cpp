@@ -824,8 +824,11 @@ static void AddNodeIDCustom(FoldingSetNodeID &ID, const SDNode *N) {
   } // end switch (N->getOpcode())
 
   // Target specific memory nodes could also have address spaces to check.
-  if (N->isTargetMemoryOpcode())
-    ID.AddInteger(cast<MemSDNode>(N)->getPointerInfo().getAddrSpace());
+  if (N->isTargetMemoryOpcode()) {
+    const MemSDNode *MN = cast<MemSDNode>(N);
+    ID.AddInteger(MN->getRawSubclassData());
+    ID.AddInteger(MN->getPointerInfo().getAddrSpace());  
+  }
 }
 
 /// AddNodeIDNode - Generic routine for adding a nodes info to the NodeID
